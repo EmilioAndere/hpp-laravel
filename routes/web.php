@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::redirect('/', '/api/app');
+Route::redirect('/', '/api/equipos');

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\SedeController;
 use App\Models\App;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,3 +29,13 @@ Route::prefix('app')->group(function(){
     Route::put('/{id}', [AppController::class, 'update']);
     Route::delete('/{name}', [AppController::class, 'destroy']);
 });
+
+Route::prefix('equipos')->group(function(){
+    Route::get('/', [DeviceController::class, 'index']);
+    Route::get('/{attr}/{search}', [DeviceController::class, 'show']);
+    Route::post('/', [DeviceController::class, 'store']);
+    Route::put('/{estacion}', [DeviceController::class, 'update']);
+    Route::delete('/{estacion}', [DeviceController::class, 'destroy']);
+});
+
+Route::get('/sedes', [SedeController::class, 'index']);
