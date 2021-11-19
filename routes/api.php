@@ -6,6 +6,8 @@ use App\Http\Controllers\SedeController;
 use App\Models\App;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +22,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+RateLimiter::for('global', function (Request $request) {
+    return Limit::perMinute(1000);
 });
 
 Route::prefix('app')->group(function(){
