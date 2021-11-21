@@ -24,10 +24,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-RateLimiter::for('global', function (Request $request) {
-    return Limit::perMinute(1000);
-});
-
 Route::prefix('app')->group(function(){
     Route::get('/', [AppController::class, 'index']);
     Route::get('/{name}', [AppController::class, 'show']);
