@@ -10,4 +10,13 @@ class Sede extends Model
     use HasFactory;
 
     protected $table = 'sede';
+    protected $primaryKey = 'ID';
+
+    protected $fillable = [
+        'nombre'
+    ];
+
+    public function equipos(){
+        return $this->hasMany(Device::class, 'id_sede');
+    }
 }

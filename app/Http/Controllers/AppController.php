@@ -13,17 +13,21 @@ class AppController extends Controller
         return $app;
     }
     
-    public function show($name){
-        $app = DB::table('aplicaciones')
-            ->where('nombre', $name)->get();
+    public function show($name, $version = null){
+        if(is_null($version)){
+            $app = App::where('nombre', $name)->get();
+        }else{
+            $app = App::where('nombre', $name)->where('version', $version)->first();
+        }
         return $app;
     }
 
     public function store(Request $req){
-        $app = App::firstOrNew(
-            ['nombre' => $req->nombre],
-            ['version' => $req->version, 'fec_compra' => $req->compra]
+        $app = App::firstOrCreate(
+            ['nombre' => $req->nombre, 'version' => $req->version],
+            ['fec_compra' => $req->compra]
         );
+
         if($app->ID)
             return $app;
         else
@@ -31,18 +35,32 @@ class AppController extends Controller
             return $app->id;
     }
 
-    public function update(Request $req, $name){
-        $app = App::where('nombre', $name)
-            ->update([
-                'nombre' => $req->nombre,
-                'version' => $req->version,
-                'fec_compra' => $req->compra
-            ]);
-        return $app;
+    public function update(Request $req, $name, $version){
+        $app = App::where('nombre', $name)->where('version', $version)->first();
+
+        $app->nombre = $req->nombre;
+        $app->version = $req->version;
+        $app->fec_compra = $req->compra;
+
+        if($app->isDirty()){
+            $changes = $app->getDirty();
+            $affected = $app->save();
+            if($affected == 1){
+                return response()->json([
+                    'updated' => true,
+                    'changes' => $changes,
+                    'msg' => "Se actualizaron $affected filas"
+                ]);
+            }else{
+                return response("No se han realizado cambios", 400);
+            }
+        }else{
+            return response("No se han realizado cambios", 400);
+        }
     }
 
-    public function destroy($name){
-        $affectedRows = App::where('nombre', $name)->delete();
-        return $affectedRows;
+    public function destroy($name, $version){
+        $affectedRows = App::where('nombre', $name)->where('version', $version)->delete();
+        return response("Deleted $affectedRows rows");
     }
 }

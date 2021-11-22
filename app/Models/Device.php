@@ -20,4 +20,8 @@ class Device extends Model
         'tipo',
         'id_sede'
     ];
+
+    public function sede(){
+        return $this->belongsTo(Sede::class, 'id_sede');
+    }
 }
